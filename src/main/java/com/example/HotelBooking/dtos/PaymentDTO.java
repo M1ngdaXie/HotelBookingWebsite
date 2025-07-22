@@ -1,0 +1,44 @@
+package com.example.HotelBooking.dtos;
+
+import com.example.HotelBooking.entities.PaymentGateway;
+import com.example.HotelBooking.entities.PaymentStatus;
+import com.example.HotelBooking.entities.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PaymentDTO {
+
+
+    private Long Id;
+    private BookingDTO booking;
+    private String transactionId;
+
+    private BigDecimal amount;
+
+    private PaymentGateway paymentMethod;
+
+
+    private LocalDateTime paymentDate;
+
+    private PaymentStatus status;
+
+    private String bookingReference;
+    private String failureReason;
+
+    private String approvalLink;
+}
