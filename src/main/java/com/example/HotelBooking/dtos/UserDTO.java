@@ -33,6 +33,6 @@ public class UserDTO {
     private UserRole userRole;
 
     private boolean isActive;
-//    private LocalDateTime;
+    private LocalDateTime createdAt;
 
 }

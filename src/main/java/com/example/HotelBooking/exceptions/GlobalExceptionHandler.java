@@ -1,6 +1,8 @@
 package com.example.HotelBooking.exceptions;
 
 import com.example.HotelBooking.dtos.ResponseDTO;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.eclipse.angus.mail.iap.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,14 +10,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler extends RuntimeException {
-    public GlobalExceptionHandler(String message) {
-        super(message);
-    }
+@NoArgsConstructor
+public class GlobalExceptionHandler   {
 
-    public GlobalExceptionHandler(String message, Throwable cause) {
-        super(message, cause);
-    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO> handleAllUnknownExceptions (Exception ex) {
         ResponseDTO responseDTO = ResponseDTO.builder()
