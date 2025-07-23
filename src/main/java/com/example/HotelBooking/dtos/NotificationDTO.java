@@ -31,9 +31,11 @@ public class NotificationDTO {
 
     @NotBlank(message = "Body cannot be blank")
     private String body;
+
+    @NotBlank(message = "Booking Reference is required")
     private String bookingReference;
 
-    private NotificationType notificationType;
+    private NotificationType type;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }

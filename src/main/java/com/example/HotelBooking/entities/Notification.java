@@ -1,6 +1,5 @@
 package com.example.HotelBooking.entities;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// This class represents a Notification entity in the Hotel Booking application.
 @Entity
 @Data
 @Table(name = "notifications")
@@ -23,9 +21,12 @@ public class Notification {
     private Long Id;
 
     private String subject;
+
     @NotBlank(message = "recipient is required")
     private String recipient;
+
     private String body;
+
     private String bookingReference;
 
     @Enumerated(EnumType.STRING)
