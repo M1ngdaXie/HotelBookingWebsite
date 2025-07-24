@@ -28,15 +28,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
     private final ModelMapper modelMapper;
     private final BookingRepository bookingRepository;
     @Override
     public ResponseDTO registerUser(RegistrationRequest registrationRequest) {
-        UserRole role = UserRole.CUSTOMER;
-        if(registrationRequest.getUserRole() != null){
-            role = registrationRequest.getUserRole();
+        if (userRepository.existsByEmail(registrationRequest.getEmail())) {
+            throw new InValidCredentialException("Email already exists");
         }
+        UserRole role = registrationRequest.getUserRole() != null ? registrationRequest.getUserRole() : UserRole.CUSTOMER;
         User user = User.builder()
                 .firstName(registrationRequest.getFirstName())
                 .lastName(registrationRequest.getLastName())
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         }
         String token = jwtUtils.generateToken(user.getEmail());
         return ResponseDTO.builder()
-                .message("Welcome back " + user.getFirstName())
+                .message("Welcome back " + user.getFirstName()+ " " + user.getLastName())
                 .userRole(user.getUserRole())
                 .token(token)
                 .isActive(user.isActive())
@@ -74,12 +74,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDTO getAllUsers() {
         List<User> users = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-        List<UserDTO> userDTOs = modelMapper.map(users, new TypeToken<List<UserDTO>>(){
 
-        }.getType());
+        List<UserDTO> userDTOs = users.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .toList();
+
         return ResponseDTO.builder()
-                .message("All users retrieved successfully")
                 .status(200)
+                .message("success")
+                .users(userDTOs)
                 .build();
     }
 
@@ -89,6 +92,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found with email: " + email));
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        if(userDTO == null) {
+            throw new NotFoundException("User not found with email: " + email);
+        }
         return ResponseDTO.builder()
                 .message("successfully retrieved own account details")
                 .status(200)
@@ -136,7 +142,7 @@ public class UserServiceImpl implements UserService {
         log.info("Deleting user: {}", user);
         userRepository.delete(user);
         return ResponseDTO.builder()
-                .message("successfully retrieved own account details")
+                .message("Successfully delted" + user.getFirstName() + " " + user.getLastName())
                 .status(200)
                 .build();
     }
@@ -147,9 +153,16 @@ public class UserServiceImpl implements UserService {
     if (user != null) {
         List<Booking> bookings = bookingRepository.findByUserId(user.getId());
         List<BookingDTO> bookingDTOs = modelMapper.map(bookings, new TypeToken<List<BookingDTO>>(){}.getType());
+        if(bookingDTOs.isEmpty()) {
+            return ResponseDTO.builder()
+                    .message("No bookings found for the user")
+                    .status(404)
+                    .build();
+        }
         return ResponseDTO.builder()
                 .message("Booking history retrieved successfully")
                 .status(200)
+                .bookings(bookingDTOs)
                 .build();
     }
     return ResponseDTO.builder()
