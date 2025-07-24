@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RoomDTO {
 
-    private Long Id;
+    private Long id;
 
     private Integer roomNumber;
 

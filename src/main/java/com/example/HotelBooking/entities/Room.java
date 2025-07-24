@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Min(value = 1, message = "Room Number must at least 1")
     @Column(unique = true)

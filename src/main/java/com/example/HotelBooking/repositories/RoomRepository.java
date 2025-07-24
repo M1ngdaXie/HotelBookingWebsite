@@ -9,7 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface RoomRepository  extends JpaRepository<Room, Long> {
+public interface RoomRepository extends JpaRepository<Room, Long> {
+
+    // Finds available rooms for the given period and (optionally) room type
     @Query("""
             SELECT r FROM Room r
             WHERE
@@ -28,6 +30,7 @@ public interface RoomRepository  extends JpaRepository<Room, Long> {
             @Param("roomType") RoomType roomType
     );
 
+    // Searches rooms by number, type, price, capacity, or description (case-insensitive)
     @Query("""
             SELECT r FROM Room r
             WHERE CAST(r.roomNumber AS string) LIKE %:searchParam%
@@ -37,4 +40,11 @@ public interface RoomRepository  extends JpaRepository<Room, Long> {
                OR LOWER(r.description) LIKE LOWER(CONCAT('%', :searchParam, '%'))
             """)
     List<Room> searchRooms(@Param("searchParam") String searchParam);
+
+    // Returns all distinct RoomTypes that actually exist in the Room table
+    @Query("SELECT DISTINCT r.roomType FROM Room r")
+    List<RoomType> findDistinctRoomTypes();
+
+    // Checks if a room number already exists (for duplicate detection)
+    boolean existsByRoomNumber(Integer roomNumber);
 }
