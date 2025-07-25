@@ -42,8 +42,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> searchRooms(@Param("searchParam") String searchParam);
 
     // Returns all distinct RoomTypes that actually exist in the Room table
-    @Query("SELECT DISTINCT r.roomType FROM Room r")
-    List<RoomType> findDistinctRoomTypes();
+//    @Query("SELECT DISTINCT r.roomType FROM Room r")
+//    List<RoomType> findDistinctRoomTypes();
 
     // Checks if a room number already exists (for duplicate detection)
     boolean existsByRoomNumber(Integer roomNumber);

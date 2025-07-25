@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 
 public class BookingDTO {
 
-    private Long Id;
+    private Long id;
 
 
     private UserDTO user;
@@ -36,12 +37,12 @@ public class BookingDTO {
 
     private PaymentStatus paymentStatus;
 
-    private LocalDateTime checkInDate;
-    private LocalDateTime checkOutDate;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
 
     private BigDecimal totalPrice;
     private String bookingReference;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     private BookingStatus bookingStatus;
 

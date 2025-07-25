@@ -13,7 +13,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByUserId(Long userId); // Fetch all bookings for a specific user
 
-
     Optional<Booking> findByBookingReference(String bookingReference);
 
 
