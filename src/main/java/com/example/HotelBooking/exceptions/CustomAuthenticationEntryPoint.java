@@ -1,7 +1,6 @@
 package com.example.HotelBooking.exceptions;
 
 import com.example.HotelBooking.dtos.ResponseDTO;
-import com.example.HotelBooking.dtos.ResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

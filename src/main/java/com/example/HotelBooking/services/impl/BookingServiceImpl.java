@@ -142,7 +142,6 @@ public class BookingServiceImpl implements BookingService {
                 .build();
     }
 
-    @Override
     public ResponseDTO updateBooking(BookingDTO bookingDTO) {
         if(bookingDTO.getId() == null){
             return ResponseDTO.builder()
@@ -150,10 +149,23 @@ public class BookingServiceImpl implements BookingService {
                     .message("Booking ID is required for update.")
                     .build();
         }
-        Room room = roomRepository.findById(bookingDTO.getId())
-                .orElseThrow(() -> new NotFoundException("Room not found with ID: " + bookingDTO.getRoomId()));
+        // Fetch the booking by booking ID
         Booking existingBooking = bookingRepository.findById(bookingDTO.getId())
                 .orElseThrow(() -> new NotFoundException("Booking not found with ID: " + bookingDTO.getId()));
+
+        // Use the roomId from bookingDTO if present, otherwise use the room from the existing booking
+        Long roomId = bookingDTO.getRoomId();
+        Room room;
+        if (roomId != null) {
+            room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new NotFoundException("Room not found with ID: " + roomId));
+            existingBooking.setRoom(room); // Optionally update room if allowed
+        } else {
+            room = existingBooking.getRoom();
+            if (room == null) {
+                throw new NotFoundException("Room not found for the booking.");
+            }
+        }
 
         if(bookingDTO.getBookingStatus() != null) {
             existingBooking.setBookingStatus(bookingDTO.getBookingStatus());
@@ -167,10 +179,10 @@ public class BookingServiceImpl implements BookingService {
         if(bookingDTO.getCheckOutDate() != null) {
             existingBooking.setCheckOutDate(bookingDTO.getCheckOutDate());
         }
-        BookingDTO bookingDTOPrice = modelMapper.map(existingBooking, BookingDTO.class);
 
-            System.out.println("Calculating total price: from "+ bookingDTOPrice.getCheckInDate() + " to " + bookingDTOPrice.getCheckOutDate());
-            existingBooking.setTotalPrice(caculateTotalPrice(room, bookingDTOPrice));
+        BookingDTO bookingDTOPrice = modelMapper.map(existingBooking, BookingDTO.class);
+        System.out.println("Calculating total price: from "+ bookingDTOPrice.getCheckInDate() + " to " + bookingDTOPrice.getCheckOutDate());
+        existingBooking.setTotalPrice(caculateTotalPrice(room, bookingDTOPrice));
 
         bookingRepository.save(existingBooking);
 

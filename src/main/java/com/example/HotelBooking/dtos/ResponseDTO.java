@@ -1,7 +1,6 @@
 package com.example.HotelBooking.dtos;
 
 import com.example.HotelBooking.entities.UserRole;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,5 +1,5 @@
 package com.example.HotelBooking.entities;
 
 public enum BookingStatus {
-    CHECK_IN,CHECK_OUT,BOOKED,CANCELLED
+    CHECKED_IN,CHECKED_OUT,BOOKED,CANCELLED
 }

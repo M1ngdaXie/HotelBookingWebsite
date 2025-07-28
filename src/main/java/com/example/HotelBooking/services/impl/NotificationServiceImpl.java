@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
+
     private final JavaMailSender javaMailSender;
     private final NotificationRepository notificationRepository;
     @Override

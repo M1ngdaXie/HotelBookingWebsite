@@ -4,7 +4,6 @@ import com.example.HotelBooking.dtos.ResponseDTO;
 import com.example.HotelBooking.dtos.RoomDTO;
 import com.example.HotelBooking.entities.Room;
 import com.example.HotelBooking.entities.RoomType;
-import com.example.HotelBooking.exceptions.InValidBookingAndDateException;
 import com.example.HotelBooking.repositories.RoomRepository;
 import com.example.HotelBooking.services.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,10 @@ import java.util.UUID;
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final ModelMapper modelMapper;
-    private static final String IMAGE_DIRECTORY = System.getProperty("user.dir") + "/product-image/";
+
+
+    private static final String IMAGE_DIRECTORY_FRONETEND = "/Users/xiemingda/Desktop/hotel-frontend/public/rooms";
+
 
     @Override
     public ResponseDTO addRoom(RoomDTO roomDTO, MultipartFile imageFile) {
@@ -41,7 +43,7 @@ public class RoomServiceImpl implements RoomService {
             }
             Room roomToSave = modelMapper.map(roomDTO, Room.class);
             if (imageFile != null) {
-                String imagePath = saveImage(imageFile);
+                String imagePath = saveImageToFrontend(imageFile);
                 roomToSave.setImageUrl(imagePath);
             }
             roomRepository.save(roomToSave);
@@ -74,7 +76,7 @@ public class RoomServiceImpl implements RoomService {
                         .build();
             }
             if (imageFile != null && !imageFile.isEmpty()) {
-                String imagePath = saveImage(imageFile);
+                String imagePath = saveImageToFrontend(imageFile);
                 existingRoom.setImageUrl(imagePath);
             }
             if (roomDTO.getRoomNumber() != null && roomDTO.getRoomNumber() >= 0) {
@@ -268,23 +270,47 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    private String saveImage(MultipartFile imageFile) {
+//    private String saveImage(MultipartFile imageFile) {
+//        if (!imageFile.getContentType().startsWith("image/")) {
+//            throw new IllegalArgumentException("Only image files are allowed.");
+//        }
+//        File directory = new File(IMAGE_DIRECTORY);
+//        if (!directory.exists()) {
+//            directory.mkdir();
+//        }
+//        String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+//        String imagePath = IMAGE_DIRECTORY + fileName;
+//        try {
+//            File destiationFile = new File(imagePath);
+//            imageFile.transferTo(destiationFile);
+//        } catch (Exception e) {
+//            log.error("Error saving image: {}", e.getMessage());
+//            throw new IllegalArgumentException("Failed to save image", e);
+//        }
+//        return imagePath;
+//    }
+
+//    private static final String IMAGE_DIRECTORY_FRONETEND = "/Users/xiemingda/Desktop/hotel-frontend/public/rooms";
+
+    private String saveImageToFrontend(MultipartFile imageFile) {
         if (!imageFile.getContentType().startsWith("image/")) {
             throw new IllegalArgumentException("Only image files are allowed.");
         }
-        File directory = new File(IMAGE_DIRECTORY);
+        File directory = new File(IMAGE_DIRECTORY_FRONETEND);
         if (!directory.exists()) {
-            directory.mkdir();
+            directory.mkdirs(); // Safely create all missing parent directories
         }
         String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
-        String imagePath = IMAGE_DIRECTORY + fileName;
+        String imagePath = IMAGE_DIRECTORY_FRONETEND + "/" + fileName; // Always ensure slash between dir and file
         try {
-            File destiationFile = new File(imagePath);
-            imageFile.transferTo(destiationFile);
+            log.info("Saving image to: {}", imagePath);
+            log.info("Image file size: {}", imageFile.getSize());
+            File destinationFile = new File(imagePath);
+            imageFile.transferTo(destinationFile);
         } catch (Exception e) {
             log.error("Error saving image: {}", e.getMessage());
             throw new IllegalArgumentException("Failed to save image", e);
         }
-        return imagePath;
+        return "/rooms/" + fileName; // This is the public path for frontend to use
     }
 }

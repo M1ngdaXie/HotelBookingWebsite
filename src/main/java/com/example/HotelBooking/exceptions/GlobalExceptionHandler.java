@@ -1,9 +1,7 @@
 package com.example.HotelBooking.exceptions;
 
 import com.example.HotelBooking.dtos.ResponseDTO;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.eclipse.angus.mail.iap.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

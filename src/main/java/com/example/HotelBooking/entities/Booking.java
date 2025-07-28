@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -40,6 +39,7 @@ public class Booking {
     private LocalDate createdAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "booking_status", length = 20)
     private BookingStatus bookingStatus;
 
 }
